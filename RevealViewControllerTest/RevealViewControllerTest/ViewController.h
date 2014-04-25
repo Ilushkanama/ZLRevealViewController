@@ -8,6 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ViewController : UIViewController
+#import "ZLRevealViewController.h"
+
+/////////////////////////////////////////////////////
+
+@interface ViewController : ZLRevealViewController
 
 @end
+
+/////////////////////////////////////////////////////

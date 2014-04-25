@@ -8,6 +8,17 @@
 
 #import <UIKit/UIKit.h>
 
+/////////////////////////////////////////////////////
+
 @interface ZLRevealViewController : UIViewController
 
+@property (weak, nonatomic) IBOutlet UIView *menuContainer;
+
+-(void) showViewController:(UIViewController *) viewController;
+
+-(void) showSidekick;
+-(void) hideSidekick;
+
 @end
+
+/////////////////////////////////////////////////////
