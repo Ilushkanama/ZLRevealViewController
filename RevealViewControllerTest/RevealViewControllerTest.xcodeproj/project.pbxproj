@@ -18,6 +18,7 @@
 		BD3A4A001902CEF5001223A8 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BD3A49FF1902CEF5001223A8 /* Images.xcassets */; };
 		BD3A4A1F1902CF50001223A8 /* ZLRevealViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BD3A4A1E1902CF50001223A8 /* ZLRevealViewController.m */; };
 		BDCC8273190CDFCA001BDAD8 /* UIViewController+ZLRevealViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BDCC8272190CDFCA001BDAD8 /* UIViewController+ZLRevealViewController.m */; };
+		C7DFEA93E82B46BD2EE63AA2 /* ZLRevealNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = C7DFEDC16F8A157FFE186F19 /* ZLRevealNavigationController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -39,6 +40,8 @@
 		BD3A4A1E1902CF50001223A8 /* ZLRevealViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZLRevealViewController.m; sourceTree = "<group>"; };
 		BDCC8271190CDFCA001BDAD8 /* UIViewController+ZLRevealViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+ZLRevealViewController.h"; sourceTree = "<group>"; };
 		BDCC8272190CDFCA001BDAD8 /* UIViewController+ZLRevealViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+ZLRevealViewController.m"; sourceTree = "<group>"; };
+		C7DFE60A216A34C16D4C2451 /* ZLRevealNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZLRevealNavigationController.h; sourceTree = "<group>"; };
+		C7DFEDC16F8A157FFE186F19 /* ZLRevealNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZLRevealNavigationController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,6 +118,8 @@
 				BD3A4A1E1902CF50001223A8 /* ZLRevealViewController.m */,
 				BDCC8271190CDFCA001BDAD8 /* UIViewController+ZLRevealViewController.h */,
 				BDCC8272190CDFCA001BDAD8 /* UIViewController+ZLRevealViewController.m */,
+				C7DFE60A216A34C16D4C2451 /* ZLRevealNavigationController.h */,
+				C7DFEDC16F8A157FFE186F19 /* ZLRevealNavigationController.m */,
 			);
 			name = RevealViewController;
 			path = ../RevealViewController;
@@ -190,6 +195,7 @@
 				BD3A49F81902CEF5001223A8 /* AppDelegate.m in Sources */,
 				BD3A49F41902CEF5001223A8 /* main.m in Sources */,
 				BD3A4A1F1902CF50001223A8 /* ZLRevealViewController.m in Sources */,
+				C7DFEA93E82B46BD2EE63AA2 /* ZLRevealNavigationController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
