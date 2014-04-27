@@ -21,15 +21,40 @@
 
 -(ZLRevealViewController *) revealViewController
 {
-    id presentingViewController = self.presentingViewController;
-    while (presentingViewController) {
-        if ([presentingViewController isKindOfClass:[ZLRevealViewController class]]) {
+    ZLRevealViewController *viewController = [self findPresentingRevealViewController];
+    if (!viewController) {
+        viewController = [self findParentRevealViewController];
+    }
+
+    return viewController;
+}
+
+-(ZLRevealViewController *) findPresentingRevealViewController
+{
+    UIViewController *viewController = self;
+    while (viewController) {
+        if ([viewController isKindOfClass:[ZLRevealViewController class]]) {
             break;
         }
+
+        viewController = viewController.presentingViewController;
     }
-    
-    return presentingViewController;
+    return (ZLRevealViewController *) viewController;
 }
+
+-(ZLRevealViewController *) findParentRevealViewController
+{
+    UIViewController *viewController = self;
+    while (viewController) {
+        if ([viewController isKindOfClass:[ZLRevealViewController class]]) {
+            break;
+        }
+
+        viewController = viewController.parentViewController;
+    }
+    return (ZLRevealViewController *) viewController;
+}
+
 
 @end
 
