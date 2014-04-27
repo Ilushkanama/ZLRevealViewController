@@ -10,7 +10,7 @@
 
 /////////////////////////////////////////////////////
 
-static NSTimeInterval const kSidekickAnimationDuration = 0.18;
+static NSTimeInterval const ZLRevealSidekickAnimationDuration = 0.18;
 
 /////////////////////////////////////////////////////
 
@@ -160,6 +160,11 @@ static NSTimeInterval const kSidekickAnimationDuration = 0.18;
     [self hideSidekick];
 }
 
+-(void) toggleSidekick
+{
+    round(self.slidingAppContainerView.frame.origin.x) == 0 ? [self showSidekick] : [self hideSidekick];
+}
+
 #pragma mark - Sidekick
 
 -(void) showSidekick
@@ -189,7 +194,7 @@ static NSTimeInterval const kSidekickAnimationDuration = 0.18;
 
 -(NSTimeInterval) slidingViewAnimationDurationForFrame:(CGRect) frame
 {
-    return kSidekickAnimationDuration * (fabsf(frame.origin.x - self.slidingAppContainerView.frame.origin.x) / self.menuContainer.frame.size.width);
+    return ZLRevealSidekickAnimationDuration * (fabsf(frame.origin.x - self.slidingAppContainerView.frame.origin.x) / self.menuContainer.frame.size.width);
 }
 
 -(void) hideSidekick

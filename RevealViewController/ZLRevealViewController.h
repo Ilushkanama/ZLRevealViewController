@@ -18,6 +18,7 @@
 
 -(void) showSidekick;
 -(void) hideSidekick;
+-(void) toggleSidekick;
 
 @end
 

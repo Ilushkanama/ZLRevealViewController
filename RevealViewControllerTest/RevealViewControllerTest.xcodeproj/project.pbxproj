@@ -17,6 +17,7 @@
 		BD3A49FE1902CEF5001223A8 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BD3A49FD1902CEF5001223A8 /* ViewController.m */; };
 		BD3A4A001902CEF5001223A8 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BD3A49FF1902CEF5001223A8 /* Images.xcassets */; };
 		BD3A4A1F1902CF50001223A8 /* ZLRevealViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BD3A4A1E1902CF50001223A8 /* ZLRevealViewController.m */; };
+		BDCC8273190CDFCA001BDAD8 /* UIViewController+ZLRevealViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BDCC8272190CDFCA001BDAD8 /* UIViewController+ZLRevealViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,6 +37,8 @@
 		BD3A49FF1902CEF5001223A8 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		BD3A4A1D1902CF50001223A8 /* ZLRevealViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZLRevealViewController.h; sourceTree = "<group>"; };
 		BD3A4A1E1902CF50001223A8 /* ZLRevealViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZLRevealViewController.m; sourceTree = "<group>"; };
+		BDCC8271190CDFCA001BDAD8 /* UIViewController+ZLRevealViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+ZLRevealViewController.h"; sourceTree = "<group>"; };
+		BDCC8272190CDFCA001BDAD8 /* UIViewController+ZLRevealViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+ZLRevealViewController.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -110,6 +113,8 @@
 			children = (
 				BD3A4A1D1902CF50001223A8 /* ZLRevealViewController.h */,
 				BD3A4A1E1902CF50001223A8 /* ZLRevealViewController.m */,
+				BDCC8271190CDFCA001BDAD8 /* UIViewController+ZLRevealViewController.h */,
+				BDCC8272190CDFCA001BDAD8 /* UIViewController+ZLRevealViewController.m */,
 			);
 			name = RevealViewController;
 			path = ../RevealViewController;
@@ -181,6 +186,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BD3A49FE1902CEF5001223A8 /* ViewController.m in Sources */,
+				BDCC8273190CDFCA001BDAD8 /* UIViewController+ZLRevealViewController.m in Sources */,
 				BD3A49F81902CEF5001223A8 /* AppDelegate.m in Sources */,
 				BD3A49F41902CEF5001223A8 /* main.m in Sources */,
 				BD3A4A1F1902CF50001223A8 /* ZLRevealViewController.m in Sources */,
@@ -324,6 +330,7 @@
 				BD3A4A181902CEF5001223A8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
