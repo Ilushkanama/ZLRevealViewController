@@ -5,7 +5,7 @@ Pod::Spec.new do |spec|
   spec.homepage       = 'https://github.com/Ilushkanama/ZLRevealViewController'
   spec.authors        = { 'Ilya Dyakonov' => 'ilya@zappylab.com' }
   spec.summary        = 'Reveal view controller'
-  spec.source         = { :git => 'https://github.com/Ilushkanama/ZLRevealViewController.git', :branch => "dev" }
+  spec.source         = { :git => 'https://github.com/zappylab/ZLRevealViewController.git', :branch => "dev" }
   spec.source_files   = 'RevealViewController/*.{h,m}'
   spec.requires_arc   = true
 end
