@@ -248,7 +248,7 @@ static CGFloat const ZLRevealShadowOpacity = 0.2;
             [self hideSidekick];
         }
     }
-    else
+    else if (self.rightSideKickController)
     {
         if (self.lastPanDistance < 0)
         {
