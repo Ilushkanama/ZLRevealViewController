@@ -20,6 +20,9 @@ static CGFloat const ZLRevealLeftSidekickMaxDisplacement = 60;
 static CGFloat const ZLRevealPanAreaWidth = 60;
 static CGFloat const ZLRevealPanAreaHeight = 40;
 
+static CGFloat const ZLRevealShadowOffset = -4;
+static CGFloat const ZLRevealShadowOpacity = 0.2;
+
 /////////////////////////////////////////////////////
 
 @interface ZLRevealViewController () <UIGestureRecognizerDelegate>
@@ -96,10 +99,10 @@ static CGFloat const ZLRevealPanAreaHeight = 40;
 -(void) setupViewControllerContainerLayout
 {
     self.viewControllerContainer.backgroundColor = [UIColor clearColor];
-    self.viewControllerContainer.layer.shadowOffset = CGSizeMake(-4, 0);
+    self.viewControllerContainer.layer.shadowOffset = CGSizeMake(ZLRevealShadowOffset, 0);
     self.viewControllerContainer.layer.masksToBounds = NO;
     self.viewControllerContainer.layer.shadowColor = [UIColor blackColor].CGColor;
-    self.viewControllerContainer.layer.shadowOpacity = 0.2;
+    self.viewControllerContainer.layer.shadowOpacity = ZLRevealShadowOpacity;
 }
 
 -(void) setupViewControllerContainerConstraints
