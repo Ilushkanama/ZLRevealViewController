@@ -13,6 +13,7 @@
 @interface UIViewController (ZLRevealViewController)
 
 -(void) toggleRevealSidekick;
+-(void) setRightSidekickController:(UIViewController *) controller;
 
 @end
 

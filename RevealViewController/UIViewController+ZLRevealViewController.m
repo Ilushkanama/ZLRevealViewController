@@ -19,6 +19,11 @@
     [[self revealViewController] toggleSidekick];
 }
 
+-(void) setRightSidekickController:(UIViewController *) controller
+{
+    [[self revealViewController] setRightSidekickController:controller];
+}
+
 -(ZLRevealViewController *) revealViewController
 {
     ZLRevealViewController *viewController = [self findPresentingRevealViewController];
