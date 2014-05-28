@@ -15,12 +15,12 @@
 static NSTimeInterval const ZLRevealSidekickAnimationDuration = 0.18;
 static CGFloat const ZLRevealRightSideKickWidth = 256;
 static CGFloat const ZLRevealLeftSidekickDefaultWidth = 256;
+static CGFloat const ZLRevealLeftSidekickMaxDisplacement = 60;
+
+static CGFloat const ZLRevealPanAreaWidth = 60;
+static CGFloat const ZLRevealPanAreaHeight = 40;
 
 /////////////////////////////////////////////////////
-
-static const int ZLRevealPanAreaWidth = 60;
-
-static const int ZLRevealPanAreaHeight = 40;
 
 @interface ZLRevealViewController () <UIGestureRecognizerDelegate>
 
@@ -140,12 +140,6 @@ static const int ZLRevealPanAreaHeight = 40;
     UITapGestureRecognizer *tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self
                                                                                     action:@selector(handleHelperTap)];
     [self.viewControllerContainerTapHelper addGestureRecognizer:tapRecognizer];
-}
-
--(void) viewWillAppear:(BOOL) animated
-{
-    [super viewWillAppear:animated];
-    [self.view bringSubviewToFront:self.viewControllerContainer];
 }
 
 #pragma mark - UIGestureRecognizerDelegate methods
@@ -285,6 +279,7 @@ static const int ZLRevealPanAreaHeight = 40;
 {
     void (^moveBlock)() = ^{
         self.viewControllerContainerPositionConstraint.constant = position;
+        self.leftSidekickContainerPositionConstraint.constant = [self leftSidekickDisplacementForViewControllerPosition:position];
 
         [self.view setNeedsLayout];
         [self.view layoutIfNeeded];
@@ -303,6 +298,22 @@ static const int ZLRevealPanAreaHeight = 40;
     {
         moveBlock();
     }
+}
+
+-(CGFloat) leftSidekickDisplacementForViewControllerPosition:(CGFloat) position
+{
+    // full sidekick displacement is achieved when view controller positioned at 0
+    // no sidekick displacement is needed when sidekick is fully visible -
+    // view controller positioned at coordinate = left sidekick container width
+    CGFloat displacement = -ZLRevealLeftSidekickMaxDisplacement;
+
+    if (position >= 0)
+    {
+        position -= CGRectGetWidth(self.leftSidekickContainer.frame);
+        displacement = position / CGRectGetWidth(self.leftSidekickContainer.frame) * ZLRevealLeftSidekickMaxDisplacement;
+    }
+
+    return displacement;
 }
 
 -(NSTimeInterval) moveAnimationDurationForPosition:(CGFloat) position
@@ -411,6 +422,7 @@ static const int ZLRevealPanAreaHeight = 40;
     self.leftSidekickContainerWidthConstraint = [self.leftSidekickContainer ZLC_bindWidth:ZLRevealLeftSidekickDefaultWidth];
 
     self.leftSidekickContainerPositionConstraint = [self.leftSidekickContainer ZLC_constraintAlingningLeftEdgesWithView:self.leftSidekickContainer.superview];
+    self.leftSidekickContainerPositionConstraint.constant = -ZLRevealLeftSidekickMaxDisplacement;
     [self.leftSidekickContainer.superview addConstraint:self.leftSidekickContainerPositionConstraint];
 }
 
