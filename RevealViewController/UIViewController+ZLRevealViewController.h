@@ -10,10 +10,13 @@
 
 /////////////////////////////////////////////////////
 
+@class ZLRevealViewController;
+
+/////////////////////////////////////////////////////
+
 @interface UIViewController (ZLRevealViewController)
 
--(void) toggleRevealSidekick;
--(void) setRightSidekickController:(UIViewController *) controller;
+-(ZLRevealViewController *) revealViewController;
 
 @end
 

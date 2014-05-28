@@ -8,6 +8,7 @@
 #import "ZLRevealNavigationController.h"
 
 #import "UIViewController+ZLRevealViewController.h"
+#import "ZLRevealViewController.h"
 
 /////////////////////////////////////////////////////
 
@@ -74,6 +75,11 @@ static NSString *sidekickButtonImageName;
                                                                       target:self
                                                                       action:@selector(toggleRevealSidekick)];
     rootViewControllerNavigationItem.leftBarButtonItem = sidekickButton;
+}
+
+-(void) toggleRevealSidekick
+{
+    [[self revealViewController] toggleSidekick];
 }
 
 @end
