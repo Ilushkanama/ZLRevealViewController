@@ -12,10 +12,12 @@
 
 @interface ZLRevealViewController : UIViewController
 
-@property (weak, nonatomic) IBOutlet UIView *menuContainer;
+-(void) setLeftSidekickWidth:(CGFloat) width;
 
 -(void) showViewController:(UIViewController *) viewController;
 -(void) showRightSidekickController:(UIViewController *) viewController;
+
+-(void) showLeftSidekickController:(UIViewController *) viewController;
 
 -(void) showSidekick;
 -(void) hideSidekick;

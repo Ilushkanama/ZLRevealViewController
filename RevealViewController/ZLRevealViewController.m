@@ -14,6 +14,7 @@
 
 static NSTimeInterval const ZLRevealSidekickAnimationDuration = 0.18;
 static CGFloat const ZLRevealRightSideKickWidth = 256;
+static CGFloat const ZLRevealLeftSidekickDefaultWidth = 256;
 
 /////////////////////////////////////////////////////
 
@@ -25,8 +26,11 @@ static CGFloat const ZLRevealRightSideKickWidth = 256;
 @property (strong) UIView *viewControllerContainer;
 @property (strong) UIView *viewControllerContainerTapHelper;
 @property (strong) UIView *rightSidekickContainer;
+@property (strong) UIView *leftSidekickContainer;
 
 @property (strong) NSLayoutConstraint *viewControllerContainerPositionConstraint;
+@property (strong) NSLayoutConstraint *leftSidekickContainerPositionConstraint;
+@property (strong) NSLayoutConstraint *leftSidekickContainerWidthConstraint;
 
 @property (strong) UIViewController *viewController;
 @property (strong) UIViewController *rightSideKickController;
@@ -52,12 +56,22 @@ static CGFloat const ZLRevealRightSideKickWidth = 256;
     return self;
 }
 
+#pragma mark -
+
+-(void) setLeftSidekickWidth:(CGFloat) width
+{
+    self.leftSidekickContainerWidthConstraint.constant = width;
+    [self.view setNeedsLayout];
+    [self.view layoutIfNeeded];
+}
+
 #pragma mark - View lifecycle
 
 -(void) viewDidLoad
 {
     [super viewDidLoad];
 
+    [self setupLeftSidekickContainer];
     [self setupViewControllerContainer];
     [self setupRightSidekickContainer];
     [self addPanRecognizer];
@@ -178,9 +192,9 @@ static CGFloat const ZLRevealRightSideKickWidth = 256;
         {
             appContainerPosition = minX;
         }
-        else if (appContainerPosition > CGRectGetWidth(self.menuContainer.frame))
+        else if (appContainerPosition > CGRectGetWidth(self.leftSidekickContainer.frame))
         {
-            appContainerPosition = CGRectGetWidth(self.menuContainer.frame);
+            appContainerPosition = CGRectGetWidth(self.leftSidekickContainer.frame);
         }
 
         [self moveToPosition:appContainerPosition
@@ -249,7 +263,7 @@ static CGFloat const ZLRevealRightSideKickWidth = 256;
 
 -(void) showSidekick
 {
-    [self moveToPosition:CGRectGetWidth(self.menuContainer.frame)
+    [self moveToPosition:CGRectGetWidth(self.leftSidekickContainer.frame)
                 animated:YES];
     [self installTapHelper];
 }
@@ -264,6 +278,7 @@ static CGFloat const ZLRevealRightSideKickWidth = 256;
 {
     void (^moveBlock)() = ^{
         self.viewControllerContainerPositionConstraint.constant = position;
+
         [self.view setNeedsLayout];
         [self.view layoutIfNeeded];
     };
@@ -285,7 +300,7 @@ static CGFloat const ZLRevealRightSideKickWidth = 256;
 
 -(NSTimeInterval) moveAnimationDurationForPosition:(CGFloat) position
 {
-    return ZLRevealSidekickAnimationDuration * (fabsf(position - CGRectGetMinX(self.viewControllerContainer.frame)) / CGRectGetWidth(self.menuContainer.frame));
+    return ZLRevealSidekickAnimationDuration * (fabsf(position - CGRectGetMinX(self.viewControllerContainer.frame)) / CGRectGetWidth(self.leftSidekickContainer.frame));
 }
 
 -(void) hideSidekick
@@ -350,7 +365,6 @@ static CGFloat const ZLRevealRightSideKickWidth = 256;
 -(void) setupRightSidekickContainer
 {
     self.rightSidekickContainer = [[UIView alloc] initWithFrame:CGRectZero];
-    self.rightSidekickContainer.backgroundColor = [UIColor blackColor];
     self.rightSidekickContainer.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:self.rightSidekickContainer];
     [self setupRightSidekickConstraints];
@@ -370,6 +384,33 @@ static CGFloat const ZLRevealRightSideKickWidth = 256;
     self.rightSideKickController = viewController;
     [self showViewController:viewController
                  inContainer:self.rightSidekickContainer];
+}
+
+#pragma mark - Left sidekick
+
+-(void) setupLeftSidekickContainer
+{
+    self.leftSidekickContainer = [[UIView alloc] initWithFrame:CGRectZero];
+    [self.view addSubview:self.leftSidekickContainer];
+
+    [self setupLeftSidekickConstraints];
+}
+
+-(void) setupLeftSidekickConstraints
+{
+    self.leftSidekickContainer.translatesAutoresizingMaskIntoConstraints = NO;
+
+    [self.leftSidekickContainer.superview ZLC_bindSubviewVertically:self.leftSidekickContainer];
+    self.leftSidekickContainerWidthConstraint = [self.leftSidekickContainer ZLC_bindWidth:ZLRevealLeftSidekickDefaultWidth];
+
+    self.leftSidekickContainerPositionConstraint = [self.leftSidekickContainer ZLC_constraintAlingningLeftEdgesWithView:self.leftSidekickContainer.superview];
+    [self.leftSidekickContainer.superview addConstraint:self.leftSidekickContainerPositionConstraint];
+}
+
+-(void) showLeftSidekickController:(UIViewController *) viewController
+{
+    [self showViewController:viewController
+                 inContainer:self.leftSidekickContainer];
 }
 
 @end

@@ -24,6 +24,10 @@
 {
     [super viewDidLoad];
 
+    UIViewController *menuController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil]
+                                                      instantiateViewControllerWithIdentifier:@"MenuController"];
+    [self showLeftSidekickController:menuController];
+
     UIViewController *childViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil]
                                              instantiateViewControllerWithIdentifier:@"ChildViewController"];
     [self showViewController:childViewController];
