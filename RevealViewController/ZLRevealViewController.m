@@ -39,6 +39,8 @@ static CGFloat const ZLRevealPanAreaHeight = 40;
 @property (strong) UIViewController *viewController;
 @property (strong) UIViewController *rightSideKickController;
 
+@property (readwrite) BOOL panIsForLeftSidekick;
+
 @end
 
 /////////////////////////////////////////////////////
@@ -152,6 +154,7 @@ static CGFloat const ZLRevealPanAreaHeight = 40;
     {
         case UIGestureRecognizerStateBegan:
             self.lastPanPoint = currentPanPoint;
+            [self determinePanTarget:[panRecognizer locationInView:self.viewControllerContainer]];
             break;
 
         case UIGestureRecognizerStateChanged:
@@ -167,6 +170,11 @@ static CGFloat const ZLRevealPanAreaHeight = 40;
         default:
             break;
     }
+}
+
+-(void) determinePanTarget:(CGPoint) panPoint
+{
+    self.panIsForLeftSidekick = panPoint.x < ZLRevealPanAreaWidth;
 }
 
 -(BOOL) gestureRecognizer:(UIGestureRecognizer *) gestureRecognizer
@@ -188,21 +196,35 @@ static CGFloat const ZLRevealPanAreaHeight = 40;
         self.lastPanDistance = distance;
 
         CGFloat appContainerPosition = self.viewControllerContainerPositionConstraint.constant + distance;
-        CGFloat minX = self.rightSideKickController ? -ZLRevealRightSideKickWidth : 0;
-        if (appContainerPosition < minX)
-        {
-            appContainerPosition = minX;
-        }
-        else if (appContainerPosition > CGRectGetWidth(self.leftSidekickContainer.frame))
-        {
-            appContainerPosition = CGRectGetWidth(self.leftSidekickContainer.frame);
-        }
-
-        [self moveToPosition:appContainerPosition
+        [self moveToPosition:[self normalizedPosition:appContainerPosition]
                     animated:NO];
 
         self.lastPanPoint = panPoint;
     }
+}
+
+-(CGFloat) normalizedPosition:(CGFloat) position
+{
+    CGFloat minX = 0;
+    CGFloat maxX = CGRectGetWidth(self.leftSidekickContainer.frame);
+
+    if (!self.panIsForLeftSidekick && self.rightSideKickController)
+    {
+        // user tries to reveal right sidekick
+        minX = -ZLRevealRightSideKickWidth;
+        maxX = 0;
+    }
+
+    if (position < minX)
+    {
+        position = minX;
+    }
+    else if (position > maxX)
+    {
+        position = maxX;
+    }
+
+    return position;
 }
 
 -(CGFloat) calculateDistanceWithPanPoint:(CGPoint) panPoint
@@ -212,7 +234,7 @@ static CGFloat const ZLRevealPanAreaHeight = 40;
 
 -(void) handlePanFinishAtPoint:(CGPoint) finishPoint
 {
-    if (self.viewControllerContainerPositionConstraint.constant >= 0)
+    if (self.panIsForLeftSidekick)
     {
         if (self.lastPanDistance >= 0)
         {
