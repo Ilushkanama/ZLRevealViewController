@@ -9,6 +9,7 @@
 #import <ZLCategories/UIView+ZLCConstraintsSetup.h>
 
 #import "ZLRevealViewController.h"
+#import "UIResponder+ZLCFirstResponder.h"
 
 /////////////////////////////////////////////////////
 
@@ -302,6 +303,8 @@ static CGFloat const ZLRevealShadowOpacity = 0.2;
 -(void) moveToPosition:(CGFloat) position
               animated:(BOOL) animated
 {
+    [[UIResponder ZLC_currentFirstResponder] resignFirstResponder];
+
     void (^moveBlock)() = ^{
         self.viewControllerContainerPositionConstraint.constant = position;
         self.leftSidekickContainerPositionConstraint.constant = [self leftSidekickDisplacementForViewControllerPosition:position];
