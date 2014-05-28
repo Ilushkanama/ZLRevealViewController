@@ -18,16 +18,22 @@
 
 @implementation ViewController
 
-#pragma mark - 
+#pragma mark -
 
 -(void) viewDidLoad
 {
     [super viewDidLoad];
-    
+
     UIViewController *childViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil]
                                              instantiateViewControllerWithIdentifier:@"ChildViewController"];
     [self showViewController:childViewController];
-    [self showSidekick];
+
+    UIViewController *rightSidekickController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil]
+                                                               instantiateViewControllerWithIdentifier:@"RightSidekickController"];
+    rightSidekickController.view.backgroundColor = [UIColor redColor];
+    [self showRightSidekickController:rightSidekickController];
+
+//    [self showSidekick];
 }
 
 @end

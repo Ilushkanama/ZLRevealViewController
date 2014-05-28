@@ -1,0 +1,14 @@
+PODS:
+  - ZLCategories (0.1)
+
+DEPENDENCIES:
+  - ZLCategories (from `https://github.com/zappylab/ZLCategories.git`)
+
+EXTERNAL SOURCES:
+  ZLCategories:
+    :git: https://github.com/zappylab/ZLCategories.git
+
+SPEC CHECKSUMS:
+  ZLCategories: 8028cf273c8748b312abdbfb17e05edcd3ca20fc
+
+COCOAPODS: 0.32.1

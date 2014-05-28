@@ -19,9 +19,11 @@
 		BD3A4A1F1902CF50001223A8 /* ZLRevealViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BD3A4A1E1902CF50001223A8 /* ZLRevealViewController.m */; };
 		BDCC8273190CDFCA001BDAD8 /* UIViewController+ZLRevealViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BDCC8272190CDFCA001BDAD8 /* UIViewController+ZLRevealViewController.m */; };
 		C7DFEA93E82B46BD2EE63AA2 /* ZLRevealNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = C7DFEDC16F8A157FFE186F19 /* ZLRevealNavigationController.m */; };
+		DF1A5F2EC03E471097267EA4 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 03B83890C65A4FF5BCFDCD80 /* libPods.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		03B83890C65A4FF5BCFDCD80 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		BD3A49E41902CEF5001223A8 /* RevealViewControllerTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RevealViewControllerTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BD3A49E71902CEF5001223A8 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		BD3A49E91902CEF5001223A8 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -42,6 +44,7 @@
 		BDCC8272190CDFCA001BDAD8 /* UIViewController+ZLRevealViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+ZLRevealViewController.m"; sourceTree = "<group>"; };
 		C7DFE60A216A34C16D4C2451 /* ZLRevealNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZLRevealNavigationController.h; sourceTree = "<group>"; };
 		C7DFEDC16F8A157FFE186F19 /* ZLRevealNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZLRevealNavigationController.m; sourceTree = "<group>"; };
+		DE41D513C8044DC487724DA7 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = ../Pods/Pods.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -52,6 +55,7 @@
 				BD3A49EA1902CEF5001223A8 /* CoreGraphics.framework in Frameworks */,
 				BD3A49EC1902CEF5001223A8 /* UIKit.framework in Frameworks */,
 				BD3A49E81902CEF5001223A8 /* Foundation.framework in Frameworks */,
+				DF1A5F2EC03E471097267EA4 /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,6 +69,7 @@
 				BD3A49ED1902CEF5001223A8 /* RevealViewControllerTest */,
 				BD3A49E61902CEF5001223A8 /* Frameworks */,
 				BD3A49E51902CEF5001223A8 /* Products */,
+				DE41D513C8044DC487724DA7 /* Pods.xcconfig */,
 			);
 			sourceTree = "<group>";
 		};
@@ -82,6 +87,7 @@
 				BD3A49E71902CEF5001223A8 /* Foundation.framework */,
 				BD3A49E91902CEF5001223A8 /* CoreGraphics.framework */,
 				BD3A49EB1902CEF5001223A8 /* UIKit.framework */,
+				03B83890C65A4FF5BCFDCD80 /* libPods.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -132,9 +138,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = BD3A4A161902CEF5001223A8 /* Build configuration list for PBXNativeTarget "RevealViewControllerTest" */;
 			buildPhases = (
+				C7D0C4A31C3949909C94A103 /* Check Pods Manifest.lock */,
 				BD3A49E01902CEF5001223A8 /* Sources */,
 				BD3A49E11902CEF5001223A8 /* Frameworks */,
 				BD3A49E21902CEF5001223A8 /* Resources */,
+				74EA8843986541DDBB93086F /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -165,6 +173,8 @@
 			mainGroup = BD3A49DB1902CEF4001223A8;
 			productRefGroup = BD3A49E51902CEF5001223A8 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+			);
 			projectRoot = "";
 			targets = (
 				BD3A49E31902CEF5001223A8 /* RevealViewControllerTest */,
@@ -184,6 +194,39 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		74EA8843986541DDBB93086F /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/../Pods/Pods-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		C7D0C4A31C3949909C94A103 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		BD3A49E01902CEF5001223A8 /* Sources */ = {
@@ -293,6 +336,7 @@
 		};
 		BD3A4A171902CEF5001223A8 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = DE41D513C8044DC487724DA7 /* Pods.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -306,6 +350,7 @@
 		};
 		BD3A4A181902CEF5001223A8 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = DE41D513C8044DC487724DA7 /* Pods.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;

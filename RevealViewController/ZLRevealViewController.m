@@ -6,24 +6,30 @@
 //  Copyright (c) 2014 ZappyLab. All rights reserved.
 //
 
+#import <ZLCategories/UIView+ZLCConstraintsSetup.h>
+
 #import "ZLRevealViewController.h"
 
 /////////////////////////////////////////////////////
 
 static NSTimeInterval const ZLRevealSidekickAnimationDuration = 0.18;
+static CGFloat const ZLRevealRightSideKickWidth = 256;
 
 /////////////////////////////////////////////////////
 
 @interface ZLRevealViewController () <UIGestureRecognizerDelegate>
 
-@property (strong) UIPanGestureRecognizer *panRecognizer;
 @property (readwrite) CGPoint lastPanPoint;
 @property (readwrite) CGFloat lastPanDistance;
 
-@property (strong) UIView *slidingAppContainerView;
-@property (strong) UIView *slidingAppContainerViewTapHelper;
+@property (strong) UIView *viewControllerContainer;
+@property (strong) UIView *viewControllerContainerTapHelper;
+@property (strong) UIView *rightSidekickContainer;
 
-@property (strong) UIViewController *currentViewController;
+@property (strong) NSLayoutConstraint *viewControllerContainerPositionConstraint;
+
+@property (strong) UIViewController *viewController;
+@property (strong) UIViewController *rightSideKickController;
 
 @end
 
@@ -33,11 +39,13 @@ static NSTimeInterval const ZLRevealSidekickAnimationDuration = 0.18;
 
 #pragma mark - Initialization
 
-- (id)initWithNibName:(NSString *)nibNameOrNil
-               bundle:(NSBundle *)nibBundleOrNil
+-(id) initWithNibName:(NSString *) nibNameOrNil
+               bundle:(NSBundle *) nibBundleOrNil
 {
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
+    self = [super initWithNibName:nibNameOrNil
+                           bundle:nibBundleOrNil];
+    if (self)
+    {
 
     }
 
@@ -46,23 +54,56 @@ static NSTimeInterval const ZLRevealSidekickAnimationDuration = 0.18;
 
 #pragma mark - View lifecycle
 
-- (void)viewDidLoad
+-(void) viewDidLoad
 {
     [super viewDidLoad];
 
-    [self setupSlidingView];
+    [self setupViewControllerContainer];
+    [self setupRightSidekickContainer];
     [self addPanRecognizer];
-    [self setupSlidingViewTapHelper];
+    [self setupViewControllerContainerTapHelper];
 }
 
--(void) setupSlidingView
+-(void) setupViewControllerContainer
 {
-    self.slidingAppContainerView = [[UIView alloc] initWithFrame:self.view.bounds];
-    self.slidingAppContainerView.backgroundColor = [UIColor clearColor];
-    self.slidingAppContainerView.layer.shadowOffset = CGSizeMake(-4, 0);
-    self.slidingAppContainerView.layer.masksToBounds = NO;
-    self.slidingAppContainerView.layer.shadowColor = [UIColor blackColor].CGColor;
-    self.slidingAppContainerView.layer.shadowOpacity = 0.2;
+    self.viewControllerContainer = [[UIView alloc] initWithFrame:CGRectZero];
+    self.viewControllerContainer.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.view addSubview:self.viewControllerContainer];
+    [self setupViewControllerContainerLayout];
+    [self setupViewControllerContainerConstraints];
+}
+
+-(void) setupViewControllerContainerLayout
+{
+    self.viewControllerContainer.backgroundColor = [UIColor clearColor];
+    self.viewControllerContainer.layer.shadowOffset = CGSizeMake(-4, 0);
+    self.viewControllerContainer.layer.masksToBounds = NO;
+    self.viewControllerContainer.layer.shadowColor = [UIColor blackColor].CGColor;
+    self.viewControllerContainer.layer.shadowOpacity = 0.2;
+}
+
+-(void) setupViewControllerContainerConstraints
+{
+    [self bindViewControllerContainerVertically];
+    [self bindViewControllerContainerWidth];
+    [self fixViewControllerContainerPosition];
+}
+
+-(void) bindViewControllerContainerVertically
+{
+    [self.viewControllerContainer.superview ZLC_bindSubviewVertically:self.viewControllerContainer];
+}
+
+-(void) bindViewControllerContainerWidth
+{
+    NSLayoutConstraint *viewControllerContainerWidthConstraint = [self.viewControllerContainer ZLC_constraintForEqualWidthsWithView:self.viewControllerContainer.superview];
+    [self.viewControllerContainer.superview addConstraint:viewControllerContainerWidthConstraint];
+}
+
+-(void) fixViewControllerContainerPosition
+{
+    self.viewControllerContainerPositionConstraint = [self.viewControllerContainer ZLC_constraintAlingningLeftEdgesWithView:self.viewControllerContainer.superview];
+    [self.viewControllerContainer.superview addConstraint:self.viewControllerContainerPositionConstraint];
 }
 
 -(void) addPanRecognizer
@@ -71,16 +112,22 @@ static NSTimeInterval const ZLRevealSidekickAnimationDuration = 0.18;
                                                                                     action:@selector(handleGestureRecognizer:)];
     panRecognizer.maximumNumberOfTouches = 1;
     panRecognizer.delegate = self;
-    [self.slidingAppContainerView addGestureRecognizer:panRecognizer];
+    [self.viewControllerContainer addGestureRecognizer:panRecognizer];
 }
 
--(void) setupSlidingViewTapHelper
+-(void) setupViewControllerContainerTapHelper
 {
-    self.slidingAppContainerViewTapHelper = [[UIView alloc] initWithFrame:self.view.bounds];
+    self.viewControllerContainerTapHelper = [[UIView alloc] initWithFrame:self.view.bounds];
 
     UITapGestureRecognizer *tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self
                                                                                     action:@selector(handleHelperTap)];
-    [self.slidingAppContainerViewTapHelper addGestureRecognizer:tapRecognizer];
+    [self.viewControllerContainerTapHelper addGestureRecognizer:tapRecognizer];
+}
+
+-(void) viewWillAppear:(BOOL) animated
+{
+    [super viewWillAppear:animated];
+    [self.view bringSubviewToFront:self.viewControllerContainer];
 }
 
 #pragma mark - UIGestureRecognizerDelegate methods
@@ -89,7 +136,8 @@ static NSTimeInterval const ZLRevealSidekickAnimationDuration = 0.18;
 {
     CGPoint currentPanPoint = [panRecognizer locationInView:self.view];
 
-    switch (panRecognizer.state) {
+    switch (panRecognizer.state)
+    {
         case UIGestureRecognizerStateBegan:
             self.lastPanPoint = currentPanPoint;
             break;
@@ -112,30 +160,32 @@ static NSTimeInterval const ZLRevealSidekickAnimationDuration = 0.18;
 -(BOOL) gestureRecognizer:(UIGestureRecognizer *) gestureRecognizer
        shouldReceiveTouch:(UITouch *) touch
 {
-    CGPoint touchLocation = [touch locationInView:self.slidingAppContainerView];
-    if (touchLocation.x <= 60 || touchLocation.y <= 40) {
-        return YES;
-    }
+    CGPoint touchLocation = [touch locationInView:self.viewControllerContainer];
+    return touchLocation.x <= 60 || touchLocation.y <= 40;
 
-    return NO;
 }
 
 -(void) handlePanMoveToPoint:(CGPoint) panPoint
 {
     CGFloat distance = [self calculateDistanceWithPanPoint:panPoint];
-    if (distance != 0.0) {
+    if (distance != 0)
+    {
         self.lastPanDistance = distance;
 
-        CGRect frame = self.slidingAppContainerView.frame;
-        frame.origin.x += distance;
-        if (frame.origin.x < 0.0) {
-            frame.origin.x = 0.0;
+        CGFloat appContainerPosition = self.viewControllerContainerPositionConstraint.constant + distance;
+        CGFloat minX = self.rightSideKickController ? -ZLRevealRightSideKickWidth : 0;
+        if (appContainerPosition < minX)
+        {
+            appContainerPosition = minX;
         }
-        else if (frame.origin.x > self.menuContainer.frame.size.width) {
-            frame.origin.x = self.menuContainer.frame.size.width;
+        else if (appContainerPosition > CGRectGetWidth(self.menuContainer.frame))
+        {
+            appContainerPosition = CGRectGetWidth(self.menuContainer.frame);
         }
 
-        self.slidingAppContainerView.frame = frame;
+        [self moveToPosition:appContainerPosition
+                    animated:NO];
+
         self.lastPanPoint = panPoint;
     }
 }
@@ -147,12 +197,42 @@ static NSTimeInterval const ZLRevealSidekickAnimationDuration = 0.18;
 
 -(void) handlePanFinishAtPoint:(CGPoint) finishPoint
 {
-    if (self.lastPanDistance >= 0) {
-        [self showSidekick];
+    if (self.viewControllerContainerPositionConstraint.constant >= 0)
+    {
+        if (self.lastPanDistance >= 0)
+        {
+            [self showSidekick];
+        }
+        else
+        {
+            [self hideSidekick];
+        }
     }
-    else {
-        [self hideSidekick];
+    else
+    {
+        if (self.lastPanDistance < 0)
+        {
+            [self showRightSidekick];
+        }
+        else
+        {
+            [self hideRightSidekick];
+        }
     }
+}
+
+-(void) showRightSidekick
+{
+    [self moveToPosition:-ZLRevealRightSideKickWidth
+                animated:YES];
+    [self installTapHelper];
+}
+
+-(void) hideRightSidekick
+{
+    [self moveToPosition:0
+                animated:YES];
+    [self removeTapHelper];
 }
 
 -(void) handleHelperTap
@@ -162,88 +242,134 @@ static NSTimeInterval const ZLRevealSidekickAnimationDuration = 0.18;
 
 -(void) toggleSidekick
 {
-    round(self.slidingAppContainerView.frame.origin.x) == 0 ? [self showSidekick] : [self hideSidekick];
+    round(self.viewControllerContainerPositionConstraint.constant) == 0
+    ? [self showSidekick]
+    : [self hideSidekick];
 }
-
-#pragma mark - Sidekick
 
 -(void) showSidekick
 {
-    CGRect newFrame = self.slidingAppContainerView.frame;
-    newFrame.origin.x = self.menuContainer.frame.size.width;
-    [self animateSliderViewToFrame:newFrame];
+    [self moveToPosition:CGRectGetWidth(self.menuContainer.frame)
+                animated:YES];
     [self installTapHelper];
 }
 
 -(void) installTapHelper
 {
-    [self.slidingAppContainerView addSubview:self.slidingAppContainerViewTapHelper];
+    [self.viewControllerContainer addSubview:self.viewControllerContainerTapHelper];
 }
 
--(void) animateSliderViewToFrame:(CGRect) newFrame
+-(void) moveToPosition:(CGFloat) position
+              animated:(BOOL) animated
 {
-    [UIView animateWithDuration:[self slidingViewAnimationDurationForFrame:newFrame]
-                          delay:0
-                        options:UIViewAnimationOptionCurveEaseIn
-                     animations:^
-     {
-         self.slidingAppContainerView.frame = newFrame;
-     }
-                     completion:nil];
+    void (^moveBlock)() = ^{
+        self.viewControllerContainerPositionConstraint.constant = position;
+        [self.view setNeedsLayout];
+        [self.view layoutIfNeeded];
+    };
+
+    if (animated)
+    {
+        [self.view layoutIfNeeded];
+        [UIView animateWithDuration:[self moveAnimationDurationForPosition:position]
+                              delay:0
+                            options:UIViewAnimationOptionCurveEaseIn
+                         animations:moveBlock
+                         completion:nil];
+    }
+    else
+    {
+        moveBlock();
+    }
 }
 
--(NSTimeInterval) slidingViewAnimationDurationForFrame:(CGRect) frame
+-(NSTimeInterval) moveAnimationDurationForPosition:(CGFloat) position
 {
-    return ZLRevealSidekickAnimationDuration * (fabsf(frame.origin.x - self.slidingAppContainerView.frame.origin.x) / self.menuContainer.frame.size.width);
+    return ZLRevealSidekickAnimationDuration * (fabsf(position - CGRectGetMinX(self.viewControllerContainer.frame)) / CGRectGetWidth(self.menuContainer.frame));
 }
 
 -(void) hideSidekick
 {
-    CGRect newFrame = self.slidingAppContainerView.frame;
-    newFrame.origin.x = 0.0;
-    [self animateSliderViewToFrame:newFrame];
+    [self moveToPosition:0
+                animated:YES];
     [self removeTapHelper];
 }
 
 -(void) removeTapHelper
 {
-    [self.slidingAppContainerViewTapHelper removeFromSuperview];
+    [self.viewControllerContainerTapHelper removeFromSuperview];
 }
 
 #pragma mark - View controllers presentation
 
 -(void) showViewController:(UIViewController *) viewController
 {
-    [self removeViewOfCurrentViewController];
-    [self addViewOfViewController:viewController];
-    [self setupViewOfViewControllerToBeDisplayed:viewController];
+    self.viewController = viewController;
+    [self showViewController:viewController
+                 inContainer:self.viewControllerContainer];
+}
 
-    self.currentViewController = viewController;
+-(void) showViewController:(UIViewController *) viewController
+               inContainer:(UIView *) container
+{
+    [self removeViewOfViewController:viewController];
+    [self addViewOfViewController:viewController
+                      toContainer:container];
+    [self setupViewOfViewControllerToBeDisplayed:viewController];
+}
+
+-(void) removeViewOfViewController:(UIViewController *) viewController
+{
+    [viewController removeFromParentViewController];
+    [viewController.view removeFromSuperview];
+}
+
+-(void) addViewOfViewController:(UIViewController *) viewController
+                    toContainer:(UIView *) container
+{
+    [self addChildViewController:viewController];
+    [container addSubview:viewController.view];
+    [viewController didMoveToParentViewController:self];
 }
 
 -(void) setupViewOfViewControllerToBeDisplayed:(UIViewController *) viewController
 {
-    viewController.view.frame = self.slidingAppContainerView.bounds;
+    [self setupConstraintsForViewController];
     [viewController.view setNeedsLayout];
     [viewController.view layoutIfNeeded];
 }
 
--(void) addViewOfViewController:(UIViewController *) viewController
+-(void) setupConstraintsForViewController
 {
-    [self addChildViewController:viewController];
-    [self.slidingAppContainerView addSubview:viewController.view];
-
-    if (!self.slidingAppContainerView.superview) {
-        self.slidingAppContainerView.frame = self.view.bounds;
-        [self.view addSubview:self.slidingAppContainerView];
-    }
+    [self.viewController.view.superview ZLC_bindSubviewHorizontally:self.viewController.view];
+    [self.viewController.view.superview ZLC_bindSubviewVertically:self.viewController.view];
 }
 
--(void) removeViewOfCurrentViewController
+#pragma mark - Right sidekick
+
+-(void) setupRightSidekickContainer
 {
-    [self.currentViewController removeFromParentViewController];
-    [self.currentViewController.view removeFromSuperview];
-    [self.currentViewController.view removeGestureRecognizer:self.panRecognizer];
+    self.rightSidekickContainer = [[UIView alloc] initWithFrame:CGRectZero];
+    self.rightSidekickContainer.backgroundColor = [UIColor blackColor];
+    self.rightSidekickContainer.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.view addSubview:self.rightSidekickContainer];
+    [self setupRightSidekickConstraints];
+}
+
+-(void) setupRightSidekickConstraints
+{
+    [self.rightSidekickContainer.superview ZLC_bindSubviewVertically:self.rightSidekickContainer];
+    [self.rightSidekickContainer ZLC_bindWidth:ZLRevealRightSideKickWidth];
+
+    NSLayoutConstraint *rightSidekickPositionConstraint = [self.rightSidekickContainer ZLC_constraintAligningLeftEdgeWithRightEdgeOfView:self.viewControllerContainer];
+    [self.rightSidekickContainer.superview addConstraint:rightSidekickPositionConstraint];
+}
+
+-(void) showRightSidekickController:(UIViewController *) viewController
+{
+    self.rightSideKickController = viewController;
+    [self showViewController:viewController
+                 inContainer:self.rightSidekickContainer];
 }
 
 @end

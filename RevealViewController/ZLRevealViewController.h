@@ -15,6 +15,7 @@
 @property (weak, nonatomic) IBOutlet UIView *menuContainer;
 
 -(void) showViewController:(UIViewController *) viewController;
+-(void) showRightSidekickController:(UIViewController *) viewController;
 
 -(void) showSidekick;
 -(void) hideSidekick;
