@@ -18,6 +18,10 @@ static CGFloat const ZLRevealLeftSidekickDefaultWidth = 256;
 
 /////////////////////////////////////////////////////
 
+static const int ZLRevealPanAreaWidth = 60;
+
+static const int ZLRevealPanAreaHeight = 40;
+
 @interface ZLRevealViewController () <UIGestureRecognizerDelegate>
 
 @property (readwrite) CGPoint lastPanPoint;
@@ -175,7 +179,10 @@ static CGFloat const ZLRevealLeftSidekickDefaultWidth = 256;
        shouldReceiveTouch:(UITouch *) touch
 {
     CGPoint touchLocation = [touch locationInView:self.viewControllerContainer];
-    return touchLocation.x <= 60 || touchLocation.y <= 40;
+    CGFloat distanceToRightEdge = CGRectGetWidth(self.viewControllerContainer.frame) - touchLocation.x;
+    return touchLocation.x <= ZLRevealPanAreaWidth ||
+            touchLocation.y <= ZLRevealPanAreaHeight ||
+            distanceToRightEdge < ZLRevealPanAreaWidth;
 
 }
 
