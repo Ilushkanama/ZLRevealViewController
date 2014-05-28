@@ -21,6 +21,9 @@
 -(void) hideSidekick;
 -(void) toggleSidekick;
 
+-(void) showRightSidekick;
+-(void) hideRightSidekick;
+
 @end
 
 /////////////////////////////////////////////////////
