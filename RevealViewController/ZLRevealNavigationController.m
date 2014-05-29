@@ -34,7 +34,7 @@ static NSString *sidekickButtonImageName;
 -(void) setViewControllers:(NSArray *) viewControllers
 {
     [super setViewControllers:viewControllers];
-    [self setupSidekickButton];
+    [self setupAppearance];
 }
 
 #pragma mark - Initializations
@@ -42,7 +42,7 @@ static NSString *sidekickButtonImageName;
 -(void)awakeFromNib
 {
     [super awakeFromNib];
-    [self setupSidekickButton];
+    [self setupAppearance];
 }
 
 -(id) initWithNibName:(NSString *) nibNameOrNil
@@ -61,10 +61,15 @@ static NSString *sidekickButtonImageName;
 {
     self = [super initWithRootViewController:rootViewController];
     if (self) {
-        [self setupSidekickButton];
+        [self setupAppearance];
     }
 
     return self;
+}
+
+-(void) setupAppearance
+{
+    [self setupSidekickButton];
 }
 
 -(void) setupSidekickButton

@@ -13,6 +13,8 @@
 
 +(void) setSidekickButtonImageName:(NSString *) imageName;
 
+-(void) setupAppearance;
+
 @end
 
 /////////////////////////////////////////////////////
