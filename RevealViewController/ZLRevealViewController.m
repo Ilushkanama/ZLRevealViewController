@@ -188,7 +188,7 @@ static CGFloat const ZLRevealShadowOpacity = 0.2;
     CGFloat distanceToRightEdge = CGRectGetWidth(self.viewControllerContainer.frame) - touchLocation.x;
     return touchLocation.x <= ZLRevealPanAreaWidth ||
             touchLocation.y <= ZLRevealPanAreaHeight ||
-            distanceToRightEdge < ZLRevealPanAreaWidth;
+    (self.rightSideKickController && distanceToRightEdge < ZLRevealPanAreaWidth);
 
 }
 
