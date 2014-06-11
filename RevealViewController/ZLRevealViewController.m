@@ -395,15 +395,16 @@ static CGFloat const ZLRevealShadowOpacity = 0.2;
 
 -(void) setupViewOfViewControllerToBeDisplayed:(UIViewController *) viewController
 {
-    [self setupConstraintsForViewController];
+    [self setupConstraintsForViewController:viewController];
     [viewController.view setNeedsLayout];
     [viewController.view layoutIfNeeded];
 }
 
--(void) setupConstraintsForViewController
+-(void) setupConstraintsForViewController:(UIViewController *) viewController
 {
-    [self.viewController.view.superview ZLC_bindSubviewHorizontally:self.viewController.view];
-    [self.viewController.view.superview ZLC_bindSubviewVertically:self.viewController.view];
+    viewController.view.translatesAutoresizingMaskIntoConstraints = NO;
+    [viewController.view.superview ZLC_bindSubviewHorizontally:viewController.view];
+    [viewController.view.superview ZLC_bindSubviewVertically:viewController.view];
 }
 
 #pragma mark - Right sidekick
