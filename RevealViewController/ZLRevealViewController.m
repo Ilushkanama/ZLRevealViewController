@@ -412,6 +412,7 @@ static CGFloat const ZLRevealShadowOpacity = 0.2;
 -(void) setupRightSidekickContainer
 {
     self.rightSidekickContainer = [[UIView alloc] initWithFrame:CGRectZero];
+    self.rightSidekickContainer.backgroundColor = [UIColor whiteColor];
     self.rightSidekickContainer.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:self.rightSidekickContainer];
     [self setupRightSidekickConstraints];
@@ -428,9 +429,17 @@ static CGFloat const ZLRevealShadowOpacity = 0.2;
 
 -(void) showRightSidekickController:(UIViewController *) viewController
 {
+    if (viewController)
+    {
+        [self showViewController:viewController
+                     inContainer:self.rightSidekickContainer];
+    }
+    else
+    {
+        [self removeViewOfViewController:self.rightSideKickController];
+    }
+    
     self.rightSideKickController = viewController;
-    [self showViewController:viewController
-                 inContainer:self.rightSidekickContainer];
 }
 
 #pragma mark - Left sidekick
