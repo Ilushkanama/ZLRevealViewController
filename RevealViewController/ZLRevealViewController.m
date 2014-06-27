@@ -365,6 +365,7 @@ static CGFloat const ZLRevealShadowOpacity = 0.2;
 
 -(void) showViewController:(UIViewController *) viewController
 {
+    [self removeViewOfViewController:self.viewController];
     self.viewController = viewController;
     [self showViewController:viewController
                  inContainer:self.viewControllerContainer];
@@ -381,13 +382,16 @@ static CGFloat const ZLRevealShadowOpacity = 0.2;
 
 -(void) removeViewOfViewController:(UIViewController *) viewController
 {
+    [viewController willMoveToParentViewController:nil];
     [viewController removeFromParentViewController];
     [viewController.view removeFromSuperview];
+    [viewController didMoveToParentViewController:nil];
 }
 
 -(void) addViewOfViewController:(UIViewController *) viewController
                     toContainer:(UIView *) container
 {
+    [viewController willMoveToParentViewController:self];
     [self addChildViewController:viewController];
     [container addSubview:viewController.view];
     [viewController didMoveToParentViewController:self];
@@ -438,7 +442,7 @@ static CGFloat const ZLRevealShadowOpacity = 0.2;
     {
         [self removeViewOfViewController:self.rightSideKickController];
     }
-    
+
     self.rightSideKickController = viewController;
 }
 
