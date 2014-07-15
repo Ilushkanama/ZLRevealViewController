@@ -126,7 +126,7 @@ static CGFloat const ZLRevealShadowOpacity = 0.2;
 
 -(void) fixViewControllerContainerPosition
 {
-    self.viewControllerContainerPositionConstraint = [self.viewControllerContainer ZLC_constraintAlingningLeftEdgesWithView:self.viewControllerContainer.superview];
+    self.viewControllerContainerPositionConstraint = [self.viewControllerContainer ZLC_constraintAligningLeftEdgesWithView:self.viewControllerContainer.superview];
     [self.viewControllerContainer.superview addConstraint:self.viewControllerContainerPositionConstraint];
 }
 
@@ -463,7 +463,7 @@ static CGFloat const ZLRevealShadowOpacity = 0.2;
     [self.leftSidekickContainer.superview ZLC_bindSubviewVertically:self.leftSidekickContainer];
     self.leftSidekickContainerWidthConstraint = [self.leftSidekickContainer ZLC_bindWidth:ZLRevealLeftSidekickDefaultWidth];
 
-    self.leftSidekickContainerPositionConstraint = [self.leftSidekickContainer ZLC_constraintAlingningLeftEdgesWithView:self.leftSidekickContainer.superview];
+    self.leftSidekickContainerPositionConstraint = [self.leftSidekickContainer ZLC_constraintAligningLeftEdgesWithView:self.leftSidekickContainer.superview];
     self.leftSidekickContainerPositionConstraint.constant = -ZLRevealLeftSidekickMaxDisplacement;
     [self.leftSidekickContainer.superview addConstraint:self.leftSidekickContainerPositionConstraint];
 }
