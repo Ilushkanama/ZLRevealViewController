@@ -271,14 +271,33 @@ static CGFloat const ZLRevealShadowOpacity = 0.2;
 
 -(void) hideRightSidekick
 {
+    [self notifyAboutRightSidekickDidHide];
     [self moveToPosition:0
                 animated:YES];
     [self removeTapHelper];
 }
 
+-(void) notifyAboutRightSidekickDidHide
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:ZLRevealViewControllerDidHideRightSidekickNotification
+                                                        object:self];
+}
+
 -(void) handleHelperTap
 {
-    [self hideSidekick];
+    if ([self rightSidekickVisible])
+    {
+        [self hideRightSidekick];
+    }
+    else
+    {
+        [self hideSidekick];
+    }
+}
+
+-(BOOL) rightSidekickVisible
+{
+    return self.viewControllerContainerPositionConstraint.constant < 0;
 }
 
 -(void) toggleSidekick
