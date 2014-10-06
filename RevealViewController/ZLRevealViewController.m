@@ -28,9 +28,6 @@ static CGFloat const ZLRevealShadowOpacity = 0.2;
 
 @interface ZLRevealViewController () <UIGestureRecognizerDelegate>
 
-@property (readwrite) CGPoint lastPanPoint;
-@property (readwrite) CGFloat lastPanDistance;
-
 @property (strong) UIView *viewControllerContainer;
 @property (strong) UIView *viewControllerContainerTapHelper;
 @property (strong) UIView *rightSidekickContainer;
@@ -39,11 +36,13 @@ static CGFloat const ZLRevealShadowOpacity = 0.2;
 @property (strong) NSLayoutConstraint *viewControllerContainerPositionConstraint;
 @property (strong) NSLayoutConstraint *leftSidekickContainerPositionConstraint;
 @property (strong) NSLayoutConstraint *leftSidekickContainerWidthConstraint;
+@property (strong, nonatomic) NSLayoutConstraint *rightSidekickContainerPositionConstraint;
 
 @property (strong) UIViewController *viewController;
 @property (strong) UIViewController *rightSideKickController;
 
 @property (readwrite) BOOL panIsForLeftSidekick;
+@property (readwrite) CGFloat lastPanDistance;
 
 @end
 
@@ -152,23 +151,23 @@ static CGFloat const ZLRevealShadowOpacity = 0.2;
 
 -(void) handleGestureRecognizer:(UIPanGestureRecognizer *) panRecognizer
 {
-    CGPoint currentPanPoint = [panRecognizer locationInView:self.view];
-
     switch (panRecognizer.state)
     {
         case UIGestureRecognizerStateBegan:
-            self.lastPanPoint = currentPanPoint;
+            self.lastPanDistance = [panRecognizer translationInView:self.view].x;
             [self determinePanTarget:[panRecognizer locationInView:self.viewControllerContainer]];
             break;
 
         case UIGestureRecognizerStateChanged:
-            [self handlePanMoveToPoint:currentPanPoint];
+            [self handlePanMoveByDistance:[panRecognizer translationInView:self.view].x];
+            [panRecognizer setTranslation:CGPointZero
+                                   inView:self.view];
             break;
 
         case UIGestureRecognizerStateEnded:
         case UIGestureRecognizerStateCancelled:
         case UIGestureRecognizerStateFailed:
-            [self handlePanFinishAtPoint:currentPanPoint];
+            [self handlePanFinish];
             break;
 
         default:
@@ -178,32 +177,58 @@ static CGFloat const ZLRevealShadowOpacity = 0.2;
 
 -(void) determinePanTarget:(CGPoint) panPoint
 {
-    self.panIsForLeftSidekick = panPoint.x < ZLRevealPanAreaWidth;
+    CGFloat distanceToRightEdge = CGRectGetWidth(self.viewControllerContainer.frame) - panPoint.x;
+    if ([self rightSidekickVisible])
+    {
+        self.panIsForLeftSidekick = NO;
+    }
+    else
+    {
+        self.panIsForLeftSidekick = panPoint.x < ZLRevealPanAreaWidth
+                                    || (distanceToRightEdge > ZLRevealPanAreaHeight &&
+                                        panPoint.y < ZLRevealPanAreaHeight);
+    }
 }
 
 -(BOOL) gestureRecognizer:(UIGestureRecognizer *) gestureRecognizer
        shouldReceiveTouch:(UITouch *) touch
 {
+    BOOL shouldReceiveTouch;
+    
     CGPoint touchLocation = [touch locationInView:self.viewControllerContainer];
     CGFloat distanceToRightEdge = CGRectGetWidth(self.viewControllerContainer.frame) - touchLocation.x;
-    return touchLocation.x <= ZLRevealPanAreaWidth ||
-            touchLocation.y <= ZLRevealPanAreaHeight ||
-    (self.rightSideKickController && distanceToRightEdge < ZLRevealPanAreaWidth);
-
+    if ([self rightSidekickVisible] || [self leftSidekickVisible])
+    {
+        shouldReceiveTouch = YES;
+    }
+    else
+    {
+        shouldReceiveTouch = touchLocation.x <= ZLRevealPanAreaWidth ||
+                                touchLocation.y <= ZLRevealPanAreaHeight ||
+                                (self.rightSideKickController && distanceToRightEdge < ZLRevealPanAreaWidth);
+    }
+    
+    return shouldReceiveTouch;
 }
 
--(void) handlePanMoveToPoint:(CGPoint) panPoint
+-(void) handlePanMoveByDistance:(CGFloat) distance
 {
-    CGFloat distance = [self calculateDistanceWithPanPoint:panPoint];
     if (distance != 0)
     {
         self.lastPanDistance = distance;
 
-        CGFloat appContainerPosition = self.viewControllerContainerPositionConstraint.constant + distance;
-        [self moveToPosition:[self normalizedPosition:appContainerPosition]
-                    animated:NO];
-
-        self.lastPanPoint = panPoint;
+        if (self.panIsForLeftSidekick)
+        {
+            CGFloat position = self.viewControllerContainerPositionConstraint.constant + distance;
+            [self moveToPosition:[self normalizedPosition:position]
+                        animated:NO];
+        }
+        else
+        {
+            CGFloat position = self.rightSidekickContainerPositionConstraint.constant + distance;
+            [self moveRightSidekickToOffset:[self normalizedRightSidekickOffset:position]
+                                   animated:NO];
+        }
     }
 }
 
@@ -211,13 +236,6 @@ static CGFloat const ZLRevealShadowOpacity = 0.2;
 {
     CGFloat minX = 0;
     CGFloat maxX = CGRectGetWidth(self.leftSidekickContainer.frame);
-
-    if (!self.panIsForLeftSidekick && self.rightSideKickController)
-    {
-        // user tries to reveal right sidekick
-        minX = -ZLRevealRightSideKickWidth;
-        maxX = 0;
-    }
 
     if (position < minX)
     {
@@ -231,12 +249,24 @@ static CGFloat const ZLRevealShadowOpacity = 0.2;
     return position;
 }
 
--(CGFloat) calculateDistanceWithPanPoint:(CGPoint) panPoint
+-(CGFloat) normalizedRightSidekickOffset:(CGFloat) offset
 {
-    return panPoint.x - self.lastPanPoint.x;
+    CGFloat minX = -ZLRevealRightSideKickWidth;
+    CGFloat maxX = 0;
+
+    if (offset < minX)
+    {
+        offset = minX;
+    }
+    else if (offset > maxX)
+    {
+        offset = maxX;
+    }
+
+    return offset;
 }
 
--(void) handlePanFinishAtPoint:(CGPoint) finishPoint
+-(void) handlePanFinish
 {
     if (self.panIsForLeftSidekick)
     {
@@ -264,17 +294,45 @@ static CGFloat const ZLRevealShadowOpacity = 0.2;
 
 -(void) showRightSidekick
 {
-    [self moveToPosition:-ZLRevealRightSideKickWidth
-                animated:YES];
+    [self moveRightSidekickToOffset:-ZLRevealRightSideKickWidth
+                           animated:YES];
     [self installTapHelper];
 }
 
 -(void) hideRightSidekick
 {
     [self notifyAboutRightSidekickDidHide];
-    [self moveToPosition:0
-                animated:YES];
+    [self moveRightSidekickToOffset:0
+                           animated:YES];
     [self removeTapHelper];
+}
+
+-(void) moveRightSidekickToOffset:(CGFloat) offset
+                         animated:(BOOL) animated
+{
+    [[UIResponder ZLC_currentFirstResponder] resignFirstResponder];
+
+    void (^moveBlock)() = ^
+    {
+        self.rightSidekickContainerPositionConstraint.constant = offset;
+
+        [self.view setNeedsLayout];
+        [self.view layoutIfNeeded];
+    };
+
+    if (animated)
+    {
+        [self.view layoutIfNeeded];
+        [UIView animateWithDuration:0.25
+                              delay:0
+                            options:UIViewAnimationOptionCurveEaseIn
+                         animations:moveBlock
+                         completion:nil];
+    }
+    else
+    {
+        moveBlock();
+    }
 }
 
 -(void) notifyAboutRightSidekickDidHide
@@ -297,7 +355,12 @@ static CGFloat const ZLRevealShadowOpacity = 0.2;
 
 -(BOOL) rightSidekickVisible
 {
-    return self.viewControllerContainerPositionConstraint.constant < 0;
+    return self.rightSidekickContainerPositionConstraint.constant < 0;
+}
+
+-(BOOL) leftSidekickVisible
+{
+    return self.viewControllerContainerPositionConstraint.constant > 0;
 }
 
 -(void) toggleSidekick
@@ -324,7 +387,8 @@ static CGFloat const ZLRevealShadowOpacity = 0.2;
 {
     [[UIResponder ZLC_currentFirstResponder] resignFirstResponder];
 
-    void (^moveBlock)() = ^{
+    void (^moveBlock)() = ^
+    {
         self.viewControllerContainerPositionConstraint.constant = position;
         self.leftSidekickContainerPositionConstraint.constant = [self leftSidekickDisplacementForViewControllerPosition:position];
 
@@ -446,8 +510,8 @@ static CGFloat const ZLRevealShadowOpacity = 0.2;
     [self.rightSidekickContainer.superview ZLC_bindSubviewVertically:self.rightSidekickContainer];
     [self.rightSidekickContainer ZLC_bindWidth:ZLRevealRightSideKickWidth];
 
-    NSLayoutConstraint *rightSidekickPositionConstraint = [self.rightSidekickContainer ZLC_constraintAligningLeftEdgeWithRightEdgeOfView:self.viewControllerContainer];
-    [self.rightSidekickContainer.superview addConstraint:rightSidekickPositionConstraint];
+    self.rightSidekickContainerPositionConstraint = [self.rightSidekickContainer ZLC_constraintAligningLeftEdgeWithRightEdgeOfView:self.viewControllerContainer];
+    [self.rightSidekickContainer.superview addConstraint:self.rightSidekickContainerPositionConstraint];
 }
 
 -(void) showRightSidekickController:(UIViewController *) viewController
