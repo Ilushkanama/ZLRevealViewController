@@ -84,7 +84,7 @@ static NSString *sidekickButtonImageName;
 
 -(void) toggleRevealSidekick
 {
-    [[self revealViewController] toggleSidekick];
+    [[self zlr_revealViewController] toggleSidekick];
 }
 
 @end

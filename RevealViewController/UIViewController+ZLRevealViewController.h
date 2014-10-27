@@ -16,7 +16,7 @@
 
 @interface UIViewController (ZLRevealViewController)
 
--(ZLRevealViewController *) revealViewController;
+-(ZLRevealViewController *) zlr_revealViewController;
 
 @end
 

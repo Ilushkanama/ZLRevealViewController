@@ -14,7 +14,7 @@
 
 @implementation UIViewController (ZLRevealViewController)
 
--(ZLRevealViewController *) revealViewController
+-(ZLRevealViewController *) zlr_revealViewController
 {
     ZLRevealViewController *viewController = [self findPresentingRevealViewController];
     if (!viewController) {
