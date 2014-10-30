@@ -156,6 +156,7 @@ static CGFloat const ZLRevealShadowOpacity = 0.2;
         case UIGestureRecognizerStateBegan:
             self.lastPanDistance = [panRecognizer translationInView:self.view].x;
             [self determinePanTarget:[panRecognizer locationInView:self.viewControllerContainer]];
+            [self installTapHelper];
             break;
 
         case UIGestureRecognizerStateChanged:
@@ -194,7 +195,7 @@ static CGFloat const ZLRevealShadowOpacity = 0.2;
        shouldReceiveTouch:(UITouch *) touch
 {
     BOOL shouldReceiveTouch;
-    
+
     CGPoint touchLocation = [touch locationInView:self.viewControllerContainer];
     CGFloat distanceToRightEdge = CGRectGetWidth(self.viewControllerContainer.frame) - touchLocation.x;
     if ([self rightSidekickVisible] || [self leftSidekickVisible])
@@ -207,7 +208,7 @@ static CGFloat const ZLRevealShadowOpacity = 0.2;
                                 touchLocation.y <= ZLRevealPanAreaHeight ||
                                 (self.rightSideKickController && distanceToRightEdge < ZLRevealPanAreaWidth);
     }
-    
+
     return shouldReceiveTouch;
 }
 
@@ -227,7 +228,8 @@ static CGFloat const ZLRevealShadowOpacity = 0.2;
         {
             CGFloat position = self.rightSidekickContainerPositionConstraint.constant + distance;
             [self moveRightSidekickToOffset:[self normalizedRightSidekickOffset:position]
-                                   animated:NO];
+                                   animated:NO
+                            completionBlock:nil];
         }
     }
 }
@@ -295,7 +297,8 @@ static CGFloat const ZLRevealShadowOpacity = 0.2;
 -(void) showRightSidekick
 {
     [self moveRightSidekickToOffset:-ZLRevealRightSideKickWidth
-                           animated:YES];
+                           animated:YES
+                    completionBlock:nil];
     [self installTapHelper];
 }
 
@@ -303,18 +306,24 @@ static CGFloat const ZLRevealShadowOpacity = 0.2;
 {
     [self notifyAboutRightSidekickDidHide];
     [self moveRightSidekickToOffset:0
-                           animated:YES];
-    [self removeTapHelper];
+                           animated:YES
+                    completionBlock:^
+                    {
+                        [self removeTapHelper];
+                    }];
 }
 
 -(void) moveRightSidekickToOffset:(CGFloat) offset
                          animated:(BOOL) animated
+                  completionBlock:(void (^)(void)) completionBlock
 {
     [[UIResponder ZLC_currentFirstResponder] resignFirstResponder];
 
     void (^moveBlock)() = ^
     {
         self.rightSidekickContainerPositionConstraint.constant = offset;
+        self.viewControllerContainerTapHelper.backgroundColor = [UIColor colorWithWhite:0
+                                                                                  alpha:[self alphaForRightSidekickOffset:offset]];
 
         [self.view setNeedsLayout];
         [self.view layoutIfNeeded];
@@ -327,12 +336,31 @@ static CGFloat const ZLRevealShadowOpacity = 0.2;
                               delay:0
                             options:UIViewAnimationOptionCurveEaseIn
                          animations:moveBlock
-                         completion:nil];
+                         completion:^(BOOL finished)
+         {
+             if (finished)
+             {
+                 if (completionBlock)
+                 {
+                     completionBlock();
+                 }
+             }
+         }];
     }
     else
     {
         moveBlock();
+
+        if (completionBlock)
+        {
+            completionBlock();
+        }
     }
+}
+
+-(CGFloat) alphaForRightSidekickOffset:(CGFloat) offset
+{
+    return 0.5 * fabsf(offset / ZLRevealRightSideKickWidth);
 }
 
 -(void) notifyAboutRightSidekickDidHide
