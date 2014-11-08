@@ -41,7 +41,7 @@ static CGFloat const ZLRevealShadowOpacity = 0.2;
 @property (strong) UIViewController *viewController;
 @property (strong) UIViewController *rightSideKickController;
 
-@property (readwrite) BOOL panIsForLeftSidekick;
+@property (readwrite) BOOL shouldHandlePan;
 @property (readwrite) CGFloat lastPanDistance;
 
 @end
@@ -155,7 +155,7 @@ static CGFloat const ZLRevealShadowOpacity = 0.2;
     {
         case UIGestureRecognizerStateBegan:
             self.lastPanDistance = [panRecognizer translationInView:self.view].x;
-            [self determinePanTarget:[panRecognizer locationInView:self.viewControllerContainer]];
+            [self decideIfShouldHandlePanWithStartPoint:[panRecognizer locationInView:self.viewControllerContainer]];
             [self installTapHelper];
             break;
 
@@ -176,19 +176,12 @@ static CGFloat const ZLRevealShadowOpacity = 0.2;
     }
 }
 
--(void) determinePanTarget:(CGPoint) panPoint
+-(void) decideIfShouldHandlePanWithStartPoint:(CGPoint) panPoint
 {
     CGFloat distanceToRightEdge = CGRectGetWidth(self.viewControllerContainer.frame) - panPoint.x;
-    if ([self rightSidekickVisible])
-    {
-        self.panIsForLeftSidekick = NO;
-    }
-    else
-    {
-        self.panIsForLeftSidekick = panPoint.x < ZLRevealPanAreaWidth
-                                    || (distanceToRightEdge > ZLRevealPanAreaHeight &&
-                                        panPoint.y < ZLRevealPanAreaHeight);
-    }
+    self.shouldHandlePan = panPoint.x < ZLRevealPanAreaWidth
+    || (distanceToRightEdge > ZLRevealPanAreaHeight &&
+        panPoint.y < ZLRevealPanAreaHeight);
 }
 
 -(BOOL) gestureRecognizer:(UIGestureRecognizer *) gestureRecognizer
@@ -197,16 +190,14 @@ static CGFloat const ZLRevealShadowOpacity = 0.2;
     BOOL shouldReceiveTouch;
 
     CGPoint touchLocation = [touch locationInView:self.viewControllerContainer];
-    CGFloat distanceToRightEdge = CGRectGetWidth(self.viewControllerContainer.frame) - touchLocation.x;
-    if ([self rightSidekickVisible] || [self leftSidekickVisible])
+    if ([self leftSidekickVisible])
     {
         shouldReceiveTouch = YES;
     }
     else
     {
         shouldReceiveTouch = touchLocation.x <= ZLRevealPanAreaWidth ||
-                                touchLocation.y <= ZLRevealPanAreaHeight ||
-                                (self.rightSideKickController && distanceToRightEdge < ZLRevealPanAreaWidth);
+                                touchLocation.y <= ZLRevealPanAreaHeight;
     }
 
     return shouldReceiveTouch;
@@ -217,20 +208,9 @@ static CGFloat const ZLRevealShadowOpacity = 0.2;
     if (distance != 0)
     {
         self.lastPanDistance = distance;
-
-        if (self.panIsForLeftSidekick)
-        {
-            CGFloat position = self.viewControllerContainerPositionConstraint.constant + distance;
-            [self moveToPosition:[self normalizedPosition:position]
-                        animated:NO];
-        }
-        else
-        {
-            CGFloat position = self.rightSidekickContainerPositionConstraint.constant + distance;
-            [self moveRightSidekickToOffset:[self normalizedRightSidekickOffset:position]
-                                   animated:NO
-                            completionBlock:nil];
-        }
+        CGFloat position = self.viewControllerContainerPositionConstraint.constant + distance;
+        [self moveToPosition:[self normalizedPosition:position]
+                    animated:NO];
     }
 }
 
@@ -270,28 +250,16 @@ static CGFloat const ZLRevealShadowOpacity = 0.2;
 
 -(void) handlePanFinish
 {
-    if (self.panIsForLeftSidekick)
+    if (self.lastPanDistance >= 0)
     {
-        if (self.lastPanDistance >= 0)
-        {
-            [self showSidekick];
-        }
-        else
-        {
-            [self hideSidekick];
-        }
+        [self showSidekick];
     }
-    else if (self.rightSideKickController)
+    else
     {
-        if (self.lastPanDistance < 0)
-        {
-            [self showRightSidekick];
-        }
-        else
-        {
-            [self hideRightSidekick];
-        }
+        [self hideSidekick];
     }
+    
+    self.shouldHandlePan = NO;
 }
 
 -(void) showRightSidekick
