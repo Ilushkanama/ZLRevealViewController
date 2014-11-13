@@ -155,7 +155,6 @@ static CGFloat const ZLRevealShadowOpacity = 0.2;
     {
         case UIGestureRecognizerStateBegan:
             self.lastPanDistance = [panRecognizer translationInView:self.view].x;
-            [self decideIfShouldHandlePanWithStartPoint:[panRecognizer locationInView:self.viewControllerContainer]];
             [self installTapHelper];
             break;
 
@@ -176,14 +175,6 @@ static CGFloat const ZLRevealShadowOpacity = 0.2;
     }
 }
 
--(void) decideIfShouldHandlePanWithStartPoint:(CGPoint) panPoint
-{
-    CGFloat distanceToRightEdge = CGRectGetWidth(self.viewControllerContainer.frame) - panPoint.x;
-    self.shouldHandlePan = panPoint.x < ZLRevealPanAreaWidth
-    || (distanceToRightEdge > ZLRevealPanAreaHeight &&
-        panPoint.y < ZLRevealPanAreaHeight);
-}
-
 -(BOOL) gestureRecognizer:(UIGestureRecognizer *) gestureRecognizer
        shouldReceiveTouch:(UITouch *) touch
 {
@@ -193,6 +184,10 @@ static CGFloat const ZLRevealShadowOpacity = 0.2;
     if ([self leftSidekickVisible])
     {
         shouldReceiveTouch = YES;
+    }
+    else if ([self rightSidekickVisible])
+    {
+        shouldReceiveTouch = NO;
     }
     else
     {
@@ -258,7 +253,7 @@ static CGFloat const ZLRevealShadowOpacity = 0.2;
     {
         [self hideSidekick];
     }
-    
+
     self.shouldHandlePan = NO;
 }
 
