@@ -226,23 +226,6 @@ static CGFloat const ZLRevealShadowOpacity = 0.2;
     return position;
 }
 
--(CGFloat) normalizedRightSidekickOffset:(CGFloat) offset
-{
-    CGFloat minX = -ZLRevealRightSideKickWidth;
-    CGFloat maxX = 0;
-
-    if (offset < minX)
-    {
-        offset = minX;
-    }
-    else if (offset > maxX)
-    {
-        offset = maxX;
-    }
-
-    return offset;
-}
-
 -(void) handlePanFinish
 {
     if (self.lastPanDistance >= 0)
@@ -474,8 +457,8 @@ static CGFloat const ZLRevealShadowOpacity = 0.2;
 -(void) setupViewOfViewControllerToBeDisplayed:(UIViewController *) viewController
 {
     [self setupConstraintsForViewController:viewController];
-    [viewController.view setNeedsLayout];
-    [viewController.view layoutIfNeeded];
+    [viewController.view.superview setNeedsLayout];
+    [viewController.view.superview layoutIfNeeded];
 }
 
 -(void) setupConstraintsForViewController:(UIViewController *) viewController
