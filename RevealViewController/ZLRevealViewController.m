@@ -39,7 +39,7 @@ static CGFloat const ZLRevealShadowOpacity = 0.2;
 @property (strong, nonatomic) NSLayoutConstraint *rightSidekickContainerPositionConstraint;
 
 @property (strong) UIViewController *viewController;
-@property (strong) UIViewController *rightSideKickController;
+@property (strong) UIViewController<ZLRevealRightSidekick> *rightSideKickController;
 
 @property (readwrite) BOOL shouldHandlePan;
 @property (readwrite) CGFloat lastPanDistance;
@@ -242,6 +242,11 @@ static CGFloat const ZLRevealShadowOpacity = 0.2;
 
 -(void) showRightSidekick
 {
+    if ([self.rightSideKickController respondsToSelector:@selector(rightSidekickWillBeShown)])
+    {
+        [self.rightSideKickController rightSidekickWillBeShown];
+    }
+
     [self moveRightSidekickToOffset:-ZLRevealRightSideKickWidth
                            animated:YES
                     completionBlock:nil];
@@ -250,6 +255,11 @@ static CGFloat const ZLRevealShadowOpacity = 0.2;
 
 -(void) hideRightSidekick
 {
+    if ([self.rightSideKickController respondsToSelector:@selector(rightSidekickWillBeHidden)])
+    {
+        [self.rightSideKickController rightSidekickWillBeHidden];
+    }
+
     [self notifyAboutRightSidekickDidHide];
     [self moveRightSidekickToOffset:0
                            animated:YES
@@ -488,7 +498,7 @@ static CGFloat const ZLRevealShadowOpacity = 0.2;
     [self.rightSidekickContainer.superview addConstraint:self.rightSidekickContainerPositionConstraint];
 }
 
--(void) showRightSidekickController:(UIViewController *) viewController
+-(void) showRightSidekickController:(UIViewController <ZLRevealRightSidekick> *) viewController
 {
     if (viewController)
     {

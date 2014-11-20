@@ -12,6 +12,15 @@
 
 static NSString *const ZLRevealViewControllerDidHideRightSidekickNotification = @"RevealViewControllerDidHideRightSidekick";
 
+@protocol ZLRevealRightSidekick <NSObject>
+
+@optional
+
+-(void) rightSidekickWillBeShown;
+-(void) rightSidekickWillBeHidden;
+
+@end
+
 /////////////////////////////////////////////////////
 
 @interface ZLRevealViewController : UIViewController
@@ -19,7 +28,7 @@ static NSString *const ZLRevealViewControllerDidHideRightSidekickNotification = 
 -(void) setLeftSidekickWidth:(CGFloat) width;
 
 -(void) showViewController:(UIViewController *) viewController;
--(void) showRightSidekickController:(UIViewController *) viewController;
+-(void) showRightSidekickController:(UIViewController <ZLRevealRightSidekick> *) viewController;
 
 -(void) showLeftSidekickController:(UIViewController *) viewController;
 
