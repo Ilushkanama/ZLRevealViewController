@@ -322,7 +322,7 @@ static CGFloat const ZLRevealShadowOpacity = 0.2;
 -(void) moveToPosition:(CGFloat) position
               animated:(BOOL) animated
 {
-    [[UIResponder ZLC_currentFirstResponder] resignFirstResponder];
+    [[UIResponder zlc_currentFirstResponder] resignFirstResponder];
 
     void (^moveBlock)() = ^{
         self.viewControllerContainerPositionConstraint.constant = position;
