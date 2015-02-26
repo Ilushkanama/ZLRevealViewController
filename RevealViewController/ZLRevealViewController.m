@@ -115,18 +115,18 @@ static CGFloat const ZLRevealShadowOpacity = 0.2;
 
 -(void) bindViewControllerContainerVertically
 {
-    [self.viewControllerContainer.superview ZLC_bindSubviewVertically:self.viewControllerContainer];
+    [self.viewControllerContainer.superview zlc_bindSubviewVertically:self.viewControllerContainer];
 }
 
 -(void) bindViewControllerContainerWidth
 {
-    NSLayoutConstraint *viewControllerContainerWidthConstraint = [self.viewControllerContainer ZLC_constraintForEqualWidthsWithView:self.viewControllerContainer.superview];
+    NSLayoutConstraint *viewControllerContainerWidthConstraint = [self.viewControllerContainer zlc_constraintForEqualWidthsWithView:self.viewControllerContainer.superview];
     [self.viewControllerContainer.superview addConstraint:viewControllerContainerWidthConstraint];
 }
 
 -(void) fixViewControllerContainerPosition
 {
-    self.viewControllerContainerPositionConstraint = [self.viewControllerContainer ZLC_constraintAligningLeftEdgesWithView:self.viewControllerContainer.superview];
+    self.viewControllerContainerPositionConstraint = [self.viewControllerContainer zlc_constraintAligningLeftEdgesWithView:self.viewControllerContainer.superview];
     [self.viewControllerContainer.superview addConstraint:self.viewControllerContainerPositionConstraint];
 }
 
@@ -426,8 +426,8 @@ static CGFloat const ZLRevealShadowOpacity = 0.2;
 -(void) setupConstraintsForViewController:(UIViewController *) viewController
 {
     viewController.view.translatesAutoresizingMaskIntoConstraints = NO;
-    [viewController.view.superview ZLC_bindSubviewHorizontally:viewController.view];
-    [viewController.view.superview ZLC_bindSubviewVertically:viewController.view];
+    [viewController.view.superview zlc_bindSubviewHorizontally:viewController.view];
+    [viewController.view.superview zlc_bindSubviewVertically:viewController.view];
 }
 
 #pragma mark - Right sidekick
@@ -443,10 +443,10 @@ static CGFloat const ZLRevealShadowOpacity = 0.2;
 
 -(void) setupRightSidekickConstraints
 {
-    [self.rightSidekickContainer.superview ZLC_bindSubviewVertically:self.rightSidekickContainer];
-    [self.rightSidekickContainer ZLC_bindWidth:ZLRevealRightSideKickWidth];
+    [self.rightSidekickContainer.superview zlc_bindSubviewVertically:self.rightSidekickContainer];
+    [self.rightSidekickContainer zlc_bindWidth:ZLRevealRightSideKickWidth];
 
-    NSLayoutConstraint *rightSidekickPositionConstraint = [self.rightSidekickContainer ZLC_constraintAligningLeftEdgeWithRightEdgeOfView:self.viewControllerContainer];
+    NSLayoutConstraint *rightSidekickPositionConstraint = [self.rightSidekickContainer zlc_constraintAligningLeftEdgeWithRightEdgeOfView:self.viewControllerContainer];
     [self.rightSidekickContainer.superview addConstraint:rightSidekickPositionConstraint];
 }
 
@@ -479,10 +479,10 @@ static CGFloat const ZLRevealShadowOpacity = 0.2;
 {
     self.leftSidekickContainer.translatesAutoresizingMaskIntoConstraints = NO;
 
-    [self.leftSidekickContainer.superview ZLC_bindSubviewVertically:self.leftSidekickContainer];
-    self.leftSidekickContainerWidthConstraint = [self.leftSidekickContainer ZLC_bindWidth:ZLRevealLeftSidekickDefaultWidth];
+    [self.leftSidekickContainer.superview zlc_bindSubviewVertically:self.leftSidekickContainer];
+    self.leftSidekickContainerWidthConstraint = [self.leftSidekickContainer zlc_bindWidth:ZLRevealLeftSidekickDefaultWidth];
 
-    self.leftSidekickContainerPositionConstraint = [self.leftSidekickContainer ZLC_constraintAligningLeftEdgesWithView:self.leftSidekickContainer.superview];
+    self.leftSidekickContainerPositionConstraint = [self.leftSidekickContainer zlc_constraintAligningLeftEdgesWithView:self.leftSidekickContainer.superview];
     self.leftSidekickContainerPositionConstraint.constant = -ZLRevealLeftSidekickMaxDisplacement;
     [self.leftSidekickContainer.superview addConstraint:self.leftSidekickContainerPositionConstraint];
 }
