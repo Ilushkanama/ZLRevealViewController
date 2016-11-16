@@ -30,6 +30,8 @@ static NSString *const ZLRevealViewControllerDidHideRightSidekickNotification = 
 -(void) showRightSidekick;
 -(void) hideRightSidekick;
 
+@property (readonly, nonatomic) BOOL disabledSidekick;
+
 @end
 
 /////////////////////////////////////////////////////

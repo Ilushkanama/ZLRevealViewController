@@ -152,6 +152,11 @@ static CGFloat const ZLRevealShadowOpacity = 0.2;
 
 -(void) handleGestureRecognizer:(UIPanGestureRecognizer *) panRecognizer
 {
+    if (self.disabledSidekick)
+    {
+        return;
+    }
+    
     CGPoint currentPanPoint = [panRecognizer locationInView:self.view];
 
     switch (panRecognizer.state)
